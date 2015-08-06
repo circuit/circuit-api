@@ -1,12 +1,20 @@
 # circuit-api
 
-Polymer element to access the Circuit JS SDK. Prompts for credentials if needed.
+`circuit-api` provides access the Circuit JS SDK, including the logon functionality.
+It internally uses `circuit-login-dialog` to prompt for credentials if needed.
 
+The `circuit-api` is usually used internally by other circuit elements to access the 
+JS SDK. 
+
+Example:
+
+```html
+<circuit-api auto-logon domain="circuitsandbox.net"></circuit-api>
+```
 
 ## Dependencies
 
-Element dependencies are managed via [Bower](http://bower.io/). You can
-install that via:
+Element dependencies are managed via [Bower](http://bower.io/). You can install that via:
 
     npm install -g bower
 
@@ -14,10 +22,9 @@ Then, go ahead and download the element's dependencies:
 
     bower install
 
+## Playing with the element
 
-## Playing With Your Element
-
-If you wish to work on your element in isolation, we recommend that you use
+If you wish to work on this or any other element in isolation, we recommend that you use
 [Polyserve](https://github.com/PolymerLabs/polyserve) to keep your element's
 bower dependencies in line. You can install it via:
 
