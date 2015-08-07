@@ -40,140 +40,138 @@ Example:
 </dom-module>
 
 <script>
-  (function() {
-    Polymer({
+  Polymer({
 
-      is: 'circuit-api',
-      
-      _client: null,
-      _userData: null,
-      _firstLoginAttempt: true,
+    is: 'circuit-api',
+    
+    _client: null,
+    _userData: null,
+    _firstLoginAttempt: true,
 
-      _eventTypes: [
-        'registrationStateChanged',
-        'systemMaintenance',
-        'userPresenceChanged',
-        'userUpdated',
-        'userDeleted',
-        'userSettingsUpdated',
-        'conversationCreated',
-        'conversationUpdated',
-        'conversationDeleted',
-        'itemAdded',
-        'itemUpdated',
-      ],
+    _eventTypes: [
+      'registrationStateChanged',
+      'systemMaintenance',
+      'userPresenceChanged',
+      'userUpdated',
+      'userDeleted',
+      'userSettingsUpdated',
+      'conversationCreated',
+      'conversationUpdated',
+      'conversationDeleted',
+      'itemAdded',
+      'itemUpdated',
+    ],
 
-      _apis: [
-        'getTenantUsers',
-        'subscribePresence',
-        'getConversations',
-        'getConversationItems',
-        'getUsersByIds',
-        'getTelephonyConversationId',
-        'getSupportConversationId',
-        'addTextItem',
-        'getDirectConversationWithUser',
-        'createDirectConversation',
-        'createGroupConversation',
-        'createOpenConversation',
-      ],
+    _apis: [
+      'getTenantUsers',
+      'subscribePresence',
+      'getConversations',
+      'getConversationItems',
+      'getUsersByIds',
+      'getTelephonyConversationId',
+      'getSupportConversationId',
+      'addTextItem',
+      'getDirectConversationWithUser',
+      'createDirectConversation',
+      'createGroupConversation',
+      'createOpenConversation',
+    ],
 
-      properties: {
+    properties: {
 
-        /**
-         * The default email to show in the credentials popup if not authenticated yet.
-         * If not specified localstorage is used to remember the last login.
-         */
-        email: String,
+      /**
+       * The default email to show in the credentials popup if not authenticated yet.
+       * If not specified localstorage is used to remember the last login.
+       */
+      email: String,
 
-        /**
-         * `domain` is the domain of the Circuit server. It defaults to circuitsandbox.net
-         */
-        domain: {
-          type: String,
-          value: 'circuitsandbox.net'
-        },
-
-        /**
-         * `autoLogon` set to true will autmatically perform a logon. If not yet
-         * authenticated, the user is asked to provide the credentials.
-         */
-        autoLogon: {
-          type: Boolean,
-          value: false
-        },
-
-        /**
-         * `user` is the logged on user object after a successful logon.
-         * For type definition see the JS SDK documentation. Emits `userChanged`
-         * on successful authentication.
-         */
-        user: {
-          type: Object,
-          value: null,
-          notify: true
-        }
-      },
-
-      ready: function () {
-         _client = new Circuit.Client({domain: this.domain});
-        
-        // Expose APIs
-        this._apis.forEach(function (api) {
-          this[api] = _client[api];
-        }.bind(this));
-
-        // Proxy event listeners
-        var originalListener = this.addEventListener;
-        this.addEventListener = function (type, cb) {
-          if (this._eventTypes.indexOf(type) !== -1) {
-            _client.addEventListener(type, cb);
-          } else {
-            originalListener(type, cb);
-          }
-        }.bind(this);
-
-        this.$.dialog.addEventListener('login-request', function (evt) {
-          var credentials = evt.detail;
-          this.logon(credentials.email, credentials.password);
-        }.bind(this));
-        
-        this.autoLogon && this.logon();
+      /**
+       * `domain` is the domain of the Circuit server. It defaults to circuitsandbox.net
+       */
+      domain: {
+        type: String,
+        value: 'circuitsandbox.net'
       },
 
       /**
-       * Perform a logon to Circuit unless already authenticated. Raises `userChanged` event
-       * when successfully logged on. Also raises a `registrationStateChanged` event with
-       * state `Registered`.
-       *
-       * @param {string} email Email of user.
-       * @param {string} password Password of user.
+       * `autoLogon` set to true will autmatically perform a logon. If not yet
+       * authenticated, the user is asked to provide the credentials.
        */
-      logon: function (email, password) {
-        email && (this.email = email);
-
-        _client.logon(email, password || this.password).then(function (user) {
-          this.user = user;
-        }.bind(this), function (err) {
-          if (err !== 'Unauthorized' && !this._firstLoginAttempt) {
-            this.$.dialog.error = err;
-          }
-          this._firstLoginAttempt = false;
-          this.$.dialog.open();
-        }.bind(this));
-        
-        this.password = '';
+      autoLogon: {
+        type: Boolean,
+        value: false
       },
 
       /**
-       * Logout of Circuit. Raises a `registrationStateChanged` event with
-       * state `Disconnected`.
+       * `user` is the logged on user object after a successful logon.
+       * For type definition see the JS SDK documentation. Emits `userChanged`
+       * on successful authentication.
        */
-      logout: function () {
-        _client.logout();
+      user: {
+        type: Object,
+        value: null,
+        notify: true
       }
+    },
 
-    });
-  })();
+    ready: function () {
+       _client = new Circuit.Client({domain: this.domain});
+      
+      // Expose APIs
+      this._apis.forEach(function (api) {
+        this[api] = _client[api];
+      }.bind(this));
+
+      // Proxy event listeners
+      var originalListener = this.addEventListener;
+      this.addEventListener = function (type, cb) {
+        if (this._eventTypes.indexOf(type) !== -1) {
+          _client.addEventListener(type, cb);
+        } else {
+          originalListener(type, cb);
+        }
+      }.bind(this);
+
+      this.$.dialog.addEventListener('login-request', function (evt) {
+        var credentials = evt.detail;
+        this.logon(credentials.email, credentials.password);
+      }.bind(this));
+      
+      this.autoLogon && this.logon();
+    },
+
+    /**
+     * Perform a logon to Circuit unless already authenticated. Raises `userChanged` event
+     * when successfully logged on. Also raises a `registrationStateChanged` event with
+     * state `Registered`.
+     *
+     * @param {string} email Email of user.
+     * @param {string} password Password of user.
+     */
+    logon: function (email, password) {
+      email && (this.email = email);
+
+      _client.logon(email, password || this.password).then(function (user) {
+        this.user = user;
+      }.bind(this), function (err) {
+        if (err !== 'Unauthorized' && !this._firstLoginAttempt) {
+          this.$.dialog.error = err;
+        }
+        this._firstLoginAttempt = false;
+        this.$.dialog.open();
+      }.bind(this));
+      
+      this.password = '';
+    },
+
+    /**
+     * Logout of Circuit. Raises a `registrationStateChanged` event with
+     * state `Disconnected`.
+     */
+    logout: function () {
+      _client.logout();
+    }
+
+  });
 
 </script>
