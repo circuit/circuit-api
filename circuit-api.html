@@ -3,8 +3,7 @@
 Copyright (c) 2015 Unify. All rights reserved.
 -->
 
-<script src="https://rawgit.com/yourcircuit/js-sdk/master/sdk-0.0.1.js"></script>
-<!-- <link rel="import" href="http://localhost:8094/sdk.html"> -->
+<script src="https://circuitsandbox.net/circuit.js"></script>
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-localstorage/iron-localstorage.html">
 <link rel="import" href="circuit-login-dialog.html">
@@ -54,32 +53,49 @@ Example:
       _firstLoginAttempt: true,
 
       _eventTypes: [
-        'registrationStateChanged',
-        'systemMaintenance',
-        'userPresenceChanged',
-        'userUpdated',
-        'userDeleted',
-        'userSettingsUpdated',
-        'conversationCreated',
-        'conversationUpdated',
-        'conversationDeleted',
         'itemAdded',
         'itemUpdated',
+        'conversationCreated',
+        'conversationUpdated',
+        'userPresenceChanged',
+        'userUpdated',
+        'registrationStateChanged',
+        'connectionStateChanged',
+        'reconnectFailed',
+        'userSettingsUpdated',
       ],
 
       _apis: [
-        'getTenantUsers',
-        'subscribePresence',
-        'getConversations',
-        'getConversationItems',
-        'getUsersByIds',
         'getTelephonyConversationId',
         'getSupportConversationId',
+        'getTenantUsers',
+        'subscribePresence',
+        'unsubscribePresence',
+        'getUserById',
+        'getUserByIds',
+        'getUserByEmail',
+        'getUsersByEmail',
+        'updateUser',
+        'changePassword',
+        'getPresence',
+        'setPresence',
+        'getConversations',
+        'getConversationById',
+        'getItemById',
+        'getConversationItems',
         'addTextItem',
         'getDirectConversationWithUser',
+        'addParticipants',
+        'removeParticipants',
+        'setFlagItem',
+        'clearFlagItem',
+        'likeItem',
+        'unlikeItem',
+        'markItemsAsRead',
         'createDirectConversation',
         'createGroupConversation',
         'createOpenConversation',
+        'startUserSearch',
       ],
 
       properties: {
